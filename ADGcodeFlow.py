@@ -15,12 +15,12 @@ from dotenv import load_dotenv
 from io import BytesIO
 load_dotenv() 
 
-# os.environ["AZURE_OPENAI_API_VERSION"] = st.secrets["AZURE_OPENAI_API_VERSION"]
-# os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"] = st.secrets["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"]
-# os.environ["AZURE_OPENAI_API_KEY"] = st.secrets["AZURE_OPENAI_API_KEY"]
-# os.environ["AZURE_OPENAI_ENDPOINT"] = st.secrets["AZURE_OPENAI_ENDPOINT"]
-# os.environ["http_proxy"] = st.secrets["http_proxy"]
-# os.environ["https_proxy"] = st.secrets["https_proxy"]
+os.environ["AZURE_OPENAI_API_VERSION"] = st.secrets["AZURE_OPENAI_API_VERSION"]
+os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"] = st.secrets["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"]
+os.environ["AZURE_OPENAI_API_KEY"] = st.secrets["AZURE_OPENAI_API_KEY"]
+os.environ["AZURE_OPENAI_ENDPOINT"] = st.secrets["AZURE_OPENAI_ENDPOINT"]
+os.environ["http_proxy"] = st.secrets["http_proxy"]
+os.environ["https_proxy"] = st.secrets["https_proxy"]
 
 def process_file_with_ollama(file_path, question):
     # Load the LLM
