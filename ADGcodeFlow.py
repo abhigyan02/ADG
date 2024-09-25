@@ -3,7 +3,7 @@ import streamlit as st
 from langchain_openai import AzureChatOpenAI
 from langchain_openai import AzureOpenAIEmbeddings
 #from ollama_modell import process_file_with_ollama  # Ensure this import is correct
-from langchain_community.llms import Ollama
+#from langchain_community.llms import Ollama
 from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_community.vectorstores import FAISS
 #from langchain.embeddings import HuggingFaceEmbeddings
@@ -22,7 +22,7 @@ os.environ["AZURE_OPENAI_ENDPOINT"] = st.secrets["AZURE_OPENAI_ENDPOINT"]
 os.environ["http_proxy"] = st.secrets["http_proxy"]
 os.environ["https_proxy"] = st.secrets["https_proxy"]
 
-def process_file_with_ollama(file_path, question):
+def process_file_with_llm(file_path, question):
     # Load the LLM
     llm = AzureChatOpenAI(openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"],
                       azure_deployment=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"],
@@ -143,7 +143,7 @@ Any other relevant information or tips for users."""
     # Run the Ollama model to process the file and display the result
 if st.button("Generate flow"):
     with st.spinner("Processing..."):
-        response = process_file_with_ollama(file_path, question)
+        response = process_file_with_llm(file_path, question)
         st.subheader("Code Flow Description")
         st.write(response)
         
