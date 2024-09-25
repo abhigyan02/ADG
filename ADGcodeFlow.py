@@ -4,7 +4,8 @@ from langchain_openai import AzureChatOpenAI
 from langchain_openai import AzureOpenAIEmbeddings
 #from ollama_modell import process_file_with_ollama  # Ensure this import is correct
 #from langchain_community.llms import Ollama
-from langchain_community.document_loaders import UnstructuredFileLoader
+#from langchain_community.document_loaders import UnstructuredFileLoader
+from langchain.document_loaders import TextLoader
 from langchain_community.vectorstores import FAISS
 #from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
@@ -29,7 +30,7 @@ def process_file_with_llm(file_path, question):
                       temperature=0.1)
 
     # Load the document dynamically based on the file_path
-    loader = UnstructuredFileLoader(file_path)
+    loader = TextLoader(file_path)
     documents = loader.load()
 
     # Split the text into chunks
