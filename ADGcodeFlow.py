@@ -32,7 +32,7 @@ def process_file_with_llm(file_content, question):
                       temperature=0.1)
 
     # Load the document dynamically based on the file_path
-    loader = TextLoader(io.BytesIO(file_content))
+    loader = TextLoader(file_content)
     documents = loader.load()
 
     # Split the text into chunks
@@ -90,7 +90,7 @@ uploaded_file = st.file_uploader("Upload a Python file", type=["py", "txt"])
 if uploaded_file is not None:
     file_content = uploaded_file.read()  # Read file content directly into memory
 
-    st.write(f"File {uploaded_file.name} uploaded successfully!")
+    #st.write(f"File {uploaded_file.name} uploaded successfully!")
     # Default question for analysis
     question = """Analyze the following Python code and generate a structured documentation flow. Include the project/module name, an overview, dependencies, installation instructions, detailed function/class documentation, code examples, license information, authors, changelog, and any additional notes. Follow this format:
 Project/Module Name:
