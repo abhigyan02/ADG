@@ -32,7 +32,7 @@ def process_file_with_llm(file_content, question):
                       temperature=0.1)
 
     # Load the document dynamically based on the file_path
-    loader = TextLoader(BytesIO(file_content))
+    loader = TextLoader(io.BytesIO(file_content))
     documents = loader.load()
 
     # Split the text into chunks
