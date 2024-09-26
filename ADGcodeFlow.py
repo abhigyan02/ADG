@@ -13,7 +13,7 @@ from langchain.chains import RetrievalQA
 import docx
 from docx import Document
 from dotenv import load_dotenv
-from io import BytesIO
+import io #import BytesIO
 load_dotenv() 
 
 os.environ["AZURE_OPENAI_API_VERSION"] = st.secrets["AZURE_OPENAI_API_VERSION"]
