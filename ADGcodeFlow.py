@@ -23,7 +23,7 @@ os.environ["AZURE_OPENAI_ENDPOINT"] = st.secrets["AZURE_OPENAI_ENDPOINT"]
 os.environ["http_proxy"] = st.secrets["http_proxy"]
 os.environ["https_proxy"] = st.secrets["https_proxy"]
 
-print(os.environ["http_proxy"],os.environ["https_proxy"])
+#print(os.environ["http_proxy"],os.environ["https_proxy"])
 
 def process_file_with_llm(file_path, question):
     # Load the LLM
