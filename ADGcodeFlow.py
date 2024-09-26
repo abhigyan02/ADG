@@ -3,9 +3,8 @@ import streamlit as st
 from langchain_openai import AzureChatOpenAI
 from langchain_openai import AzureOpenAIEmbeddings
 #from ollama_modell import process_file_with_ollama  # Ensure this import is correct
-#from langchain_community.llms import Ollama
-#from langchain_community.document_loaders import UnstructuredFileLoader
-from langchain.document_loaders import TextLoader
+from langchain_community.llms import Ollama
+from langchain.document_loaders import UnstructuredFileLoader
 from langchain_community.vectorstores import FAISS
 #from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
@@ -13,26 +12,24 @@ from langchain.chains import RetrievalQA
 import docx
 from docx import Document
 from dotenv import load_dotenv
-import io #import BytesIO
+from io import BytesIO
 load_dotenv() 
 
 os.environ["AZURE_OPENAI_API_VERSION"] = st.secrets["AZURE_OPENAI_API_VERSION"]
 os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"] = st.secrets["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"]
 os.environ["AZURE_OPENAI_API_KEY"] = st.secrets["AZURE_OPENAI_API_KEY"]
 os.environ["AZURE_OPENAI_ENDPOINT"] = st.secrets["AZURE_OPENAI_ENDPOINT"]
-#os.environ["http_proxy"] = st.secrets["http_proxy"]
-#os.environ["https_proxy"] = st.secrets["https_proxy"]
+# os.environ["http_proxy"] = st.secrets["http_proxy"]
+# os.environ["https_proxy"] = st.secrets["https_proxy"]
 
-#print(os.environ["http_proxy"],os.environ["https_proxy"])
-
-def process_file_with_llm(file_content, question):
+def process_file_with_ollama(file_path, question):
     # Load the LLM
     llm = AzureChatOpenAI(openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"],
                       azure_deployment=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"],
                       temperature=0.1)
 
     # Load the document dynamically based on the file_path
-    loader = TextLoader(file_content)
+    loader = UnstructuredFileLoader(file_path)
     documents = loader.load()
 
     # Split the text into chunks
@@ -88,9 +85,19 @@ st.title("Code Flow Analyzer using LLM")
 uploaded_file = st.file_uploader("Upload a Python file", type=["py", "txt"])
 
 if uploaded_file is not None:
-    file_content = uploaded_file.read()  # Read file content directly into memory
+    # Ensure the "temp" directory exists
+    temp_dir = "temp"
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)  # Create the directory if it doesn't exist
+    
+    # Save the uploaded file to the "temp" directory
+    file_path = os.path.join(temp_dir, uploaded_file.name)
+    
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    
+    st.write(f"File {uploaded_file.name} uploaded successfully!")
 
-    #st.write(f"File {uploaded_file.name} uploaded successfully!")
     # Default question for analysis
     question = """Analyze the following Python code and generate a structured documentation flow. Include the project/module name, an overview, dependencies, installation instructions, detailed function/class documentation, code examples, license information, authors, changelog, and any additional notes. Follow this format:
 Project/Module Name:
@@ -136,9 +143,9 @@ Any other relevant information or tips for users."""
     # Run the Ollama model to process the file and display the result
 if st.button("Generate flow"):
     with st.spinner("Processing..."):
-            response = process_file_with_llm(file_content, question)
-            st.subheader("Code Flow Description")
-            st.write(response)
+        response = process_file_with_ollama(file_path, question)
+        st.subheader("Code Flow Description")
+        st.write(response)
         
         # template_path = 'HLS - CR DEX7629-8 - Fast Data Solution v.2_0 (ENG).docx'
         
