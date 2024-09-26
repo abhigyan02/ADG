@@ -25,14 +25,14 @@ os.environ["AZURE_OPENAI_ENDPOINT"] = st.secrets["AZURE_OPENAI_ENDPOINT"]
 
 #print(os.environ["http_proxy"],os.environ["https_proxy"])
 
-def process_file_with_llm(file_path, question):
+def process_file_with_llm(file_content, question):
     # Load the LLM
     llm = AzureChatOpenAI(openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"],
                       azure_deployment=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"],
                       temperature=0.1)
 
     # Load the document dynamically based on the file_path
-    loader = TextLoader(file_path)
+    loader = TextLoader(BytesIO(file_content))
     documents = loader.load()
 
     # Split the text into chunks
@@ -69,16 +69,16 @@ def process_file_with_llm(file_path, question):
 # doc = docx.Document(file_path)
 
 
-def create_docx(template_path, text):
-            doc = Document(template_path)
+# def create_docx(template_path, text):
+#             doc = Document(template_path)
             
-            for paragraph in doc.paragraphs:
-                if 'TEMPLATE' in paragraph.text:
-                    paragraph.text = paragraph.text.replace('TEMPLATE', text)
+#             for paragraph in doc.paragraphs:
+#                 if 'TEMPLATE' in paragraph.text:
+#                     paragraph.text = paragraph.text.replace('TEMPLATE', text)
                     
-            bio = BytesIO()
-            doc.save(bio)
-            return bio.getvalue()
+#             bio = BytesIO()
+#             doc.save(bio)
+#             return bio.getvalue()
         
 
 # Streamlit app title
@@ -88,19 +88,9 @@ st.title("Code Flow Analyzer using LLM")
 uploaded_file = st.file_uploader("Upload a Python file", type=["py", "txt"])
 
 if uploaded_file is not None:
-    # Ensure the "temp" directory exists
-    temp_dir = "temp"
-    if not os.path.exists(temp_dir):
-        os.makedirs(temp_dir)  # Create the directory if it doesn't exist
-    
-    # Save the uploaded file to the "temp" directory
-    file_path = os.path.join(temp_dir, uploaded_file.name)
-    
-    with open(file_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-    
-    st.write(f"File {uploaded_file.name} uploaded successfully!")
+    file_content = uploaded_file.read()  # Read file content directly into memory
 
+    st.write(f"File {uploaded_file.name} uploaded successfully!")
     # Default question for analysis
     question = """Analyze the following Python code and generate a structured documentation flow. Include the project/module name, an overview, dependencies, installation instructions, detailed function/class documentation, code examples, license information, authors, changelog, and any additional notes. Follow this format:
 Project/Module Name:
@@ -146,15 +136,15 @@ Any other relevant information or tips for users."""
     # Run the Ollama model to process the file and display the result
 if st.button("Generate flow"):
     with st.spinner("Processing..."):
-        response = process_file_with_llm(file_path, question)
-        st.subheader("Code Flow Description")
-        st.write(response)
+            response = process_file_with_llm(file_content, question)
+            st.subheader("Code Flow Description")
+            st.write(response)
         
-        template_path = 'HLS - CR DEX7629-8 - Fast Data Solution v.2_0 (ENG).docx'
+        # template_path = 'HLS - CR DEX7629-8 - Fast Data Solution v.2_0 (ENG).docx'
         
-        st.download_button(
-                label="Download result as DOCX",
-                data=create_docx(template_path, response),
-                file_name="code_flow_description.docx",
-                mime="docx",
-            )    
+        # st.download_button(
+        #         label="Download result as DOCX",
+        #         data=create_docx(template_path, response),
+        #         file_name="code_flow_description.docx",
+        #         mime="docx",
+        #     )    
